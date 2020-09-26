@@ -334,11 +334,12 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 			// intro track
 			{num == 6}{
+				var waitTime = 5;
 
-				"intro starting in 30 seconds!!".postln;
+				"intro starting in % seconds!!".format(waitTime).postln;
 
 				Routine({
-					15.wait;
+					waitTime.wait;
 					Synth(\playback,[\bufnum,~buffers[\intro],\amp,1,\outBus,~busses["masterOut"]]);
 				}).play;
 			}
