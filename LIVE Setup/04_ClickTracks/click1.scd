@@ -29,7 +29,7 @@ Pdef('cue1loop4',
 
 Pdef('bell1loop4',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([8,2,2,1,1,1,1],1),
 		\type, Pseq([\rest,\note!6].flat),
 		\bufnum,Pseq([~buffers[\bell]],inf),
@@ -64,7 +64,7 @@ Pdef('cue1loop8',
 
 Pdef('bell1loop8',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([24,2,2,1,1,1,1],1),
 		\type, Pseq([\rest,\note!6].flat),
 		\bufnum,Pseq([~buffers[\bell]],inf),
@@ -99,7 +99,7 @@ Pdef('elevenRiffcue',
 
 Pdef('elevenRiffcueBell',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([[[2,3/2,2]!8] ++ [1!4]].flat,1),
 		\type, Pseq([\rest!12,[\note,\rest,\rest]!4,\note!4].flat),
 		\bufnum,Pseq([~buffers[\bell]],inf),
@@ -110,9 +110,9 @@ Pdef('elevenRiffcueBell',
 	)
 );
 
-Pdef('\bell1part3',
+Pdef('bell1part3',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([1],1),
 		\bufnum,Pseq([~buffers[\bell]],inf),
 		\rate,Pseq([1],inf),
@@ -147,7 +147,7 @@ Pdef(\play1part1,
 			'loop8',
 			[['cue1loop8','bell1loop8']],
 			't160q4'!2,
-			// QUE into the BREAK
+			// CUE into the BREAK
 
 			// count in to new tempo
 			't120q4',

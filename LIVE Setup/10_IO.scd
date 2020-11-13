@@ -3,8 +3,7 @@
 //generate inputs
 (
 (
-~inputs.size.do({
-	arg index;
+~inputs.size.do({ |index|
 
 	case
 	{~inputs[index][\inBus].size == 1}

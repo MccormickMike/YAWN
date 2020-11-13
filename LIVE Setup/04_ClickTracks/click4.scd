@@ -1,3 +1,4 @@
+
 /////////////////////////////////////////////////YAWN Click #4/////////////////////////////////////////////////
 
 (
@@ -28,7 +29,7 @@ Pdef('cue4',
 
 Pdef('bell4',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([4,4,2,2,1,1,1,1],1),
 		\bufnum,Pseq([~buffers[\bell]],inf),
 		\rate,Pseq([1],inf),

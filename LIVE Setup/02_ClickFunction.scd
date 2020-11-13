@@ -2,8 +2,7 @@
 
 //bars of clicks
 (
-~bars = {
-	arg tempo = 60;
+~bars = { |tempo = 60|
 	var dur,key;
 
 	dur = tempo/60;
@@ -11,14 +10,13 @@
 
 	if(Pdef.all.includesKey(key).not,{
 
-		8.do({
-			arg index;
+		8.do({ |index|
 			var array;
 
 			if(index != 0,
 				{
 					array = (1!index).collect(
-						{arg i,j; if(j == 0,{i * 2},{i})}
+						{ |i,j| if(j == 0,{i * 2},{i})}
 					);
 			});
 

@@ -4,10 +4,9 @@
 (
 ~setArray = Dictionary();
 
-~setList.keysValuesDo({
-	arg key,value;
+~setList.keysValuesDo({ |key,value|
 
-	~setArray.put(value.song,key);
+	~setArray.put(value.song,key); // consider value[\song] for consistency's sake!
 });
 );
 
@@ -26,23 +25,23 @@
 			[7,6,"part 3 start"]
 		],
 		modButtsMid:(
-			7.collect({arg i;
+			7.collect({ |i|
 				[0,i+1,"bufnum: %".format(i)]
 			})
 			++
-			7.collect({arg i;
+			7.collect({ |i|
 				[1,i+1,"grainDur: %".format(i)]
 			})
 			++
-			7.collect({arg i;
+			7.collect({ |i|
 				[2,i+1,"posDev: %".format(i)]
 			})
 			++
-			7.collect({arg i;
+			7.collect({ |i|
 				[6,i+1,"counter: %".format(i)]
 			})
 			++
-			3.collect({ arg i;
+			3.collect({ |i|
 				var cue = [4,8,11];
 				[7,i+1,"loop cue: %".format(cue[i])]
 			})
@@ -76,7 +75,6 @@
 	),
 
 	"numberThree" -> (
-
 		songButt: ~setArray["numberThree"],
 		modButtsMid: [[7,4,"open 3 cue"]],
 		onButts: [[0,1,6,7],[0],["on","on","intro\ntrack","start"]].flop,
@@ -85,7 +83,6 @@
 	),
 
 	"numberFour" -> (
-
 		songButt: ~setArray["numberFour"],
 		modButtsMid: [[7,4,"open 4 cue"]],
 		onButts: [[0,1,2,6,7],[0],["on","on","on","bukke","start"]].flop,
@@ -95,12 +92,9 @@
 
 	"empty" -> (
 		labels: nil!8,
-
 	),
 ]
 );
 
 "guiArrays loaded".postln;
 )
-
-[[3],(0..8),["F forward","F# forward","G# forward","A forward","F reverse","F# reverse","G# reverse","A reverse"]].flop

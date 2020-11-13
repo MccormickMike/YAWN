@@ -31,7 +31,7 @@ Pdef('cue3',
 
 Pdef('bell3',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([4,4,2,2,1,1,1,1],1),
 		\bufnum,Pseq([~buffers[\bell]],inf),
 		\rate,Pseq([1],inf),

@@ -39,4 +39,4 @@
 
 "setlist loaded".postln;
 
-);
+)

@@ -21,7 +21,7 @@ Pdef('rit2',
 
 Pdef('rit2bell',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([Pseq(1.25!4 ++ (1!4),15),Pseq([1],1)]),
 		\type, Pseq([\rest!108,[\note,\rest!3]!3,\note].flat),
 		\bufnum,Pseq([~buffers[\bell]],inf),
@@ -55,7 +55,7 @@ Pdef('cue2',
 
 Pdef('bell2',
 	Pbind(
-		\instrument, \playback,
+		\instrument, \playbackMono,
 		\dur, Pseq([4,4,2,2,1,1,1,1],1),
 		\bufnum,Pseq([~buffers[\bell]],inf),
 		\rate,Pseq([1],inf),

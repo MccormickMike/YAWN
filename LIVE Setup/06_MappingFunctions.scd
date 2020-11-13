@@ -4,14 +4,14 @@
 var gitarInBus, snareInBus, bDrumInBus;
 
 (
-~inputs.size.do({
-	arg index;
+~inputs.do({ |input|
 
-	case
-	{~inputs[index][\name] == \torfinnGitar}{gitarInBus = ~inputs[index][\outBus]}
-	{~inputs[index][\name] == \oskarSnare}{snareInBus = ~inputs[index][\outBus]}
-	{~inputs[index][\name] == \oskarBassTrigger}{bDrumInBus = ~inputs[index][\outBus]};
+	switch(input[\name],
 
+		\torfinnGitar,{ gitarInBus = input[\outBus] },
+		\oskarSnare,{ snareInBus = input[\outBus] },
+		\oskarBassTrigger,{ bDrumInBus = input[\outBus] },
+	);
 });
 );
 
@@ -19,14 +19,13 @@ var gitarInBus, snareInBus, bDrumInBus;
 ~functions = Dictionary[
 
 	"numberOne" -> {
-		72.do({arg i; ~miniAPC.noteOn(0,i,0)});
-		[15,23,31].do({arg i; ~miniAPC.noteOn(0,i,5)});
-		((8,16..56) ++ (9,17..57) ++ (10,18..58) ++ (14,22..62)).do({arg i; ~miniAPC.noteOn(0,i,5)});
-		[28,29,39,55,60,61].do({arg i; ~miniAPC.noteOn(0,i,1)});
-		((0..2)++(4..7)).do({arg i; ~miniAPC.noteOn(0,i,1);~miniAPC.noteOn(0,i+64,1)});
+		72.do({ |i| ~miniAPC.noteOn(0,i,0)});
+		[15,23,31].do({ |i| ~miniAPC.noteOn(0,i,5)});
+		((8,16..56) ++ (9,17..57) ++ (10,18..58) ++ (14,22..62)).do({ |i| ~miniAPC.noteOn(0,i,5)});
+		[28,29,39,55,60,61].do({ |i| ~miniAPC.noteOn(0,i,1)});
+		((0..2)++(4..7)).do({ |i| ~miniAPC.noteOn(0,i,1);~miniAPC.noteOn(0,i+64,1)});
 
-		MIDIdef.noteOn(\buttons,{
-			arg val, num, chan, src;
+		MIDIdef.noteOn(\buttons,{ |val, num, chan, src|
 
 			case
 			// metronome
@@ -36,16 +35,15 @@ var gitarInBus, snareInBus, bDrumInBus;
 			{num == 31 and: {Pdef(\play1part1).isPlaying}}{~cues["numberOne"][\elevenRiffcue] = false; "eleven Riff cued".postln}
 			{num == 39}{Pdef(\play1part1).stop; Pdef(\play1part2).play; "cue bombs".postln}
 			{num == 55 and: {Pdef(\play1part3).isPlaying.not}}{Pdef(\play1part2).stop; Pdef(\play1part3).play;"metro 1 part 3 start".postln}
-			{num == 71}
-			{
-				Pdef.all.keysDo({
-					arg key;
+			{num == 71}{
+				Pdef.all.keysDo({ |key|
 					var playing = key.asString.contains("play1");
 
-					if(playing and: {Pdef(key).isPlaying},{Pdef(key).stop;"metro 1 stop".postln})
+					if(playing and: {Pdef(key).isPlaying},{
+						Pdef(key).stop;"metro 1 stop".postln
+					})
 				});
-				"metro 1 stop".postln
-
+				"metro 1 stop".postln;
 			}
 
 			// granulator
@@ -144,19 +142,9 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 		});
 
-		MIDIdef.cc(\faders,{
-			arg val, num, chan, src;
+		MIDIdef.cc(\faders,{ |val, num, chan, src|
 			var normLinVal,normExpVal;
 			var sliderIndex,sliderVal;
-
-			/*var timeNow, timeThen;
-			var delta;
-
-			timeThen = ~arrays["currentTime"][0];
-			timeNow = Main.elapsedTime;
-
-			delta = timeNow - timeThen;
-			*/
 
 			normLinVal = val.linlin(0,127,0,1);
 			normExpVal = val.linexp(0,127,0.001,1);
@@ -169,7 +157,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 			{num == 52}{Ndef(\gitarFreeze).set(\dustTrig,normExpVal * 4);Ndef(\gitarStutter).set(\dustTrig,normExpVal * 4);"dustTrigGitar: %".format((normExpVal * 4).round(0.01)).postln}
 			{num == 53}{Ndef(\drumFreeze).set(\dustTrig,normExpVal * 4);Ndef(\drumStutter).set(\dustTrig,normExpVal * 4);"dustTrigDrum: %".format((normExpVal * 4).round(0.01)).postln}
 			{num == 54}{Ndef(\noiseMakr).xset(\freq,(normExpVal * 100) % 0.9,\bits,normLinVal.linlin(0,1,12,16),\sampleRate,normLinVal.linlin(0,1,24,12));"noiseMakr val: %".format(normLinVal.round(0.01)).postln}
-			{num == 55}{~busses["clickAmp"].set(normExpVal); "clickAmp: %".format(normExpVal.round(0.01)).postln}
+			{num == 55}{~busses["clickAmp"].set(normLinVal); "clickAmp: %".format(normLinVal.round(0.01)).postln}
 			{num == 56}{Ndef(\output).set(\amp,normLinVal); "masterAmp: %".format(normLinVal.round(0.01)).postln};
 
 			sliderIndex = (num - 48);
@@ -180,12 +168,12 @@ var gitarInBus, snareInBus, bDrumInBus;
 	},
 
 	"numberTwo" -> {
-		72.do({arg i; ~miniAPC.noteOn(0,i,0)});
-		[23,33,55].do({arg i; ~miniAPC.noteOn(0,i,1)});
-		[39].do({arg i; ~miniAPC.noteOn(0,i,5)});
-		8.do({arg i; ~miniAPC.noteOn(0,(i*8)+3,1)}); // buffers
-		[5,67,68,69].do({arg i; ~miniAPC.noteOn(0,i,1)}); // reverb
-		3.do({arg i;
+		72.do({ |i| ~miniAPC.noteOn(0,i,0)});
+		[23,33,55].do({ |i| ~miniAPC.noteOn(0,i,1)});
+		[39].do({ |i| ~miniAPC.noteOn(0,i,5)});
+		8.do({ |i| ~miniAPC.noteOn(0,(i * 8) + 3,1)}); // buffers
+		[5,67,68,69].do({ |i| ~miniAPC.noteOn(0,i,1)}); // reverb
+		3.do({ |i|
 			if(i < 2,{
 				~miniAPC.noteOn(0,i,1);
 				~miniAPC.noteOn(0,i + 64,1)
@@ -195,15 +183,14 @@ var gitarInBus, snareInBus, bDrumInBus;
 			});
 		});
 
-		MIDIdef.noteOn(\buttons,{
-			arg val, num, chan, src;
+		MIDIdef.noteOn(\buttons,{ |val, num, chan, src|
 
 			case
 			// metronome
 			{num == 7 and: {Pdef(\play2part1).isPlaying.not}}
 			{
 				Routine({
-					25.wait;
+					15.wait;
 
 					Pdef(\play2part1).play;
 
@@ -215,8 +202,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 			{num == 71} //need a conditional statment here for \play2 patterns
 			{
-				Pdef.all.keysDo({
-					arg key;
+				Pdef.all.keysDo({ |key|
 					var playing = key.asString.contains("play2");
 
 					if(playing and: {Pdef(key).isPlaying},{Pdef(key).stop;"metro 2 stop".postln})
@@ -229,10 +215,11 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 			// eventually, guitar ducker...
 			{num == 0}{"gitar ducker not installed".postln}
+
 			// long delay
 			{num == 1 and: {Ndef(\gitarDelay).isPlaying.not}}{
 				Ndef(\gitarDelay,~yawnSynths["shiftDelay"]).play(~busses["masterOut"],group: ~inGroup,addAction:\addToTail);
-				Ndef(\gitarDelay).set(\inBus,gitarInBus,\speed,0.1,\delay,0.3,\t_trig,0);
+				Ndef(\gitarDelay).set(\inBus,gitarInBus,\speed,0.1,\delay,0.3,\trig,0);
 				"gitar delay ON".postln;
 			}
 			{num == 65 and: {Ndef(\gitarDelay).isPlaying}}{
@@ -240,7 +227,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 				"gitar delay OFF".postln;
 			}
 			// trig
-			{num == 33 and: {Ndef(\gitarDelay).isPlaying}}{Ndef(\gitarDelay).set(\t_trig,1);"gitar delay trig".postln}
+			{num == 33 and: {Ndef(\gitarDelay).isPlaying}}{Ndef(\gitarDelay).set(\trig,1);"gitar delay trig".postln}
 
 			//buffer playback
 			{num % 8 == 3 and: {num < 67} and: {Ndef(\verb).isPlaying}}{
@@ -253,11 +240,13 @@ var gitarInBus, snareInBus, bDrumInBus;
 			// reverb
 			{num == 5 and: {Ndef(\verb).isPlaying.not}}{
 				Ndef(\verb,{
-					var sig = In.ar(\inBus.kr,2);
-					var verb = FreeVerb.ar(sig,1,100,0.8);
 
-					verb = verb + CombC.ar(verb,1.0,1.0 * LFNoise2.ar(0.15).range(0.5,1.0),0.8,0.5);
+					var sig = In.ar(\inBus.kr,2);
+					var verb = HPF.ar(sig,600);
 					verb = BHiShelf.ar(verb,2250,0.5,-12);
+					verb = verb + CombC.ar(verb,1.0,1.0 * LFNoise2.ar(0.15).range(0.5,1.0),0.8,0.5);
+					verb = FreeVerb2.ar(sig[0],sig[1],1,0.8,0.75);
+
 					sig = XFade2.ar(sig,verb,\mix.kr(0.1) * 2 - 1);
 				}).play(~busses["masterOut"],group: ~inGroup, addAction:\addToHead);
 
@@ -272,8 +261,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 		});
 
-		MIDIdef.cc(\faders,{
-			arg val, num, chan, src;
+		MIDIdef.cc(\faders,{ |val, num, chan, src|
 			var normLinVal,normExpVal;
 			var sliderIndex,sliderVal;
 
@@ -282,13 +270,13 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 			case
 			{num == 48}{"empty".postln}
-			{num == 49}{Ndef(\gitarDelay).set(\amp,normExpVal);"delayAmp: %".format(normExpVal.round(0.01)).postln}
+			{num == 49}{Ndef(\gitarDelay).set(\amp,normLinVal);"delayAmp: %".format(normLinVal.round(0.01)).postln}
 			{num == 50}{"empty".postln}
 			{num == 51}{~busses["sliderControl"][3].set(normExpVal.explin(0.001,1,0.01,24.0)); "modRate: %".format(normExpVal.explin(0.001,1,0.01,24.0).round(0.01)).postln;}
 			{num == 52}{~busses["sliderControl"][4].set(normExpVal.explin(0.001,1,0.97,0.97.reciprocal)); "detune: %".format(normExpVal.explin(0.001,1,0.97,0.97.reciprocal).round(0.01)).postln;}
 			{num == 53}{Ndef(\verb).set(\mix,normLinVal); "verbMix: %".format(normLinVal.round(0.01)).postln;}
 			{num == 54}{"empty".postln}
-			{num == 55}{~busses["clickAmp"].set(normExpVal); "clickAmp: %".format(normExpVal.round(0.01)).postln}
+			{num == 55}{~busses["clickAmp"].set(normLinVal); "clickAmp: %".format(normLinVal.round(0.01)).postln}
 			{num == 56}{Ndef(\output).set(\amp,normLinVal); "masterAmp: %".format(normLinVal.round(0.01)).postln};
 
 			sliderIndex = (num - 48);
@@ -298,10 +286,10 @@ var gitarInBus, snareInBus, bDrumInBus;
 	},
 
 	"numberThree" -> {
-		72.do({arg i; ~miniAPC.noteOn(0,i,0)});
-		[6,70].do({arg i; ~miniAPC.noteOn(0,i,1)});
+		72.do({ |i| ~miniAPC.noteOn(0,i,0)});
+		[6,70].do({ |i| ~miniAPC.noteOn(0,i,1)});
 		~miniAPC.noteOn(0,39,5);
-		3.do({arg i;
+		3.do({ |i|
 			if(i < 2,{
 				~miniAPC.noteOn(0,i,1);
 				~miniAPC.noteOn(0,i + 64,1)
@@ -311,9 +299,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 			});
 		});
 
-		MIDIdef.noteOn(\buttons,{
-			arg val, num, chan, src;
-			var intro = Array.newClear(1);
+		MIDIdef.noteOn(\buttons,{ |val, num, chan, src|
 
 			case
 			// metronome
@@ -340,7 +326,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 				Routine({
 					waitTime.wait;
-					Synth(\playback,[\bufnum,~buffers[\intro],\amp,1,\outBus,~busses["masterOut"]]);
+					Synth(\playbackMono,[\bufnum,~buffers[\intro],\amp,1,\outBus,~busses["masterOut"]]);
 				}).play;
 			}
 			{num == 70 }{
@@ -352,8 +338,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 		});
 
-		MIDIdef.cc(\faders,{
-			arg val, num, chan, src;
+		MIDIdef.cc(\faders,{ |val, num, chan, src|
 			var normLinVal,normExpVal;
 			var sliderIndex,sliderVal;
 
@@ -361,14 +346,14 @@ var gitarInBus, snareInBus, bDrumInBus;
 			normExpVal = val.linexp(0,127,0.001,1);
 
 			case
-			{num == 48}{Ndef(\gitarMorph).set(\amp,normExpVal);"morphAmp: %".format(normExpVal.round(0.01)).postln}
-			{num == 49}{Ndef(\gitarMorph).set(\gain,normExpVal.linlin(0.001,1,1.0,5.0));"morphGain: %".format(normExpVal.linlin(0.001,1,1.0,5.0).round(0.01)).postln}
+			{num == 48}{Ndef(\gitarMorph).set(\amp,normLinVal);"morphAmp: %".format(normLinVal.round(0.01)).postln}
+			{num == 49}{Ndef(\gitarMorph).set(\gain,normLinVal.linlin(0.001,1,1.0,5.0));"morphGain: %".format(normLinVal.linlin(0.001,1,1.0,5.0).round(0.01)).postln}
 			{num == 50}{"empty".postln}
 			{num == 51}{"empty".postln}
 			{num == 52}{"empty".postln}
 			{num == 53}{"empty".postln}
 			{num == 54}{"empty".postln}
-			{num == 55}{~busses["clickAmp"].set(normExpVal); "clickAmp: %".format(normExpVal.round(0.01)).postln}
+			{num == 55}{~busses["clickAmp"].set(normLinVal); "clickAmp: %".format(normLinVal.round(0.01)).postln}
 			{num == 56}{Ndef(\output).set(\amp,normLinVal); "masterAmp: %".format(normLinVal.round(0.01)).postln};
 
 			sliderIndex = (num - 48);
@@ -378,10 +363,10 @@ var gitarInBus, snareInBus, bDrumInBus;
 	},
 
 	"numberFour" -> {
-		72.do({arg i; ~miniAPC.noteOn(0,i,0)});
+		72.do({ |i| ~miniAPC.noteOn(0,i,0)});
 		~miniAPC.noteOn(0,39,5);
 		~miniAPC.noteOn(0,6,1);
-		4.do({arg i;
+		4.do({ |i|
 			if(i < 3,{
 				~miniAPC.noteOn(0,i,1);
 				~miniAPC.noteOn(0,i + 64,1)
@@ -391,8 +376,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 			});
 		});
 
-		MIDIdef.noteOn(\buttons,{
-			arg val, num, chan, src;
+		MIDIdef.noteOn(\buttons,{ |val, num, chan, src|
 
 			case
 			// metronome
@@ -417,14 +401,13 @@ var gitarInBus, snareInBus, bDrumInBus;
 				"bowing time in 15 seconds!!".postln;
 				Routine({
 					10.wait;
-					Synth(\playback,[\bufnum,~buffers[\bow],\amp,1,\outBus,~busses["masterOut"]]);
+					Synth(\playbackMono,[\bufnum,~buffers[\bow],\amp,1,\outBus,~busses["masterOut"]]);
 				}).play;
 
 			};
 		});
 
-		MIDIdef.cc(\faders,{
-			arg val, num, chan, src;
+		MIDIdef.cc(\faders,{ |val, num, chan, src|
 			var normLinVal,normExpVal;
 			var sliderIndex,sliderVal;
 
@@ -432,14 +415,14 @@ var gitarInBus, snareInBus, bDrumInBus;
 			normExpVal = val.linexp(0,127,0.001,1);
 
 			case
-			{num == 48}{Ndef(\crusher).set(\amp,normExpVal); "crusherAmp: %".format(normExpVal.round(0.01)).postln}
+			{num == 48}{Ndef(\crusher).set(\amp,normLinVal); "crusherAmp: %".format(normLinVal.round(0.01)).postln}
 			{num == 49}{Ndef(\crusher).set(\bits,normExpVal.clip(0.05,1.0)); "crusherBits: %".format(normExpVal.clip(0.05,1.0).round(0.01)).postln}
 			{num == 50}{Ndef(\crusher).set(\rate,normExpVal); "crusherRate: %".format(normExpVal.round(0.01)).postln}
 			{num == 51}{"empty".postln}
 			{num == 52}{"empty".postln}
 			{num == 53}{"empty".postln}
 			{num == 54}{"empty".postln}
-			{num == 55}{~busses["clickAmp"].set(normExpVal); "clickAmp: %".format(normExpVal.round(0.01)).postln}
+			{num == 55}{~busses["clickAmp"].set(normLinVal); "clickAmp: %".format(normLinVal.round(0.01)).postln}
 			{num == 56}{Ndef(\output).set(\amp,normLinVal); "masterAmp: %".format(normLinVal.round(0.01)).postln};
 
 			sliderIndex = (num - 48);
@@ -451,7 +434,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 	},
 
 	"empty" -> { //this is worth testing...
-		72.do({arg i; ~miniAPC.noteOn(0,i,0)});
+		72.do({ |i| ~miniAPC.noteOn(0,i,0)});
 		MIDIdef(\buttons).free;
 		MIDIdef(\faders).free;
 	},

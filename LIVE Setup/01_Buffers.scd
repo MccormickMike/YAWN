@@ -18,13 +18,12 @@ var path = PathName(PathName(thisProcess.nowExecutingPath).parentPath).parentPat
 	\bow -> Buffer.readChannel(server,path +/+ "Bukke.wav",channels: [0]),
 
 	// #1
-	\water -> PathName(path +/+ "Water/").entries.collect({
-		arg sf;
+	\water -> PathName(path +/+ "Water/").entries.collect({ |sf|
 		Buffer.readChannel(server,sf.fullPath,channels: [0])
 	}),
 
-	\harms -> PathName(path +/+ "Harm/").entries.collect({
-		arg sf;
+	// duo part w/ Tarjei
+	\harms -> PathName(path +/+ "Harm/").entries.collect({ |sf|
 		Buffer.readChannel(server,sf.fullPath,channels: [0,1])
 	}),
 ];

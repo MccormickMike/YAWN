@@ -3,8 +3,7 @@
 (
 ~yawnW = Window("YAWN Live Setup",900@800);
 
-~drawGui = {
-	arg song = nil, sliderVals = 0!9;
+~drawGui = { |song = nil, sliderVals = (0!9)|
 
 	var yawnScale = ~yawnW.bounds.width/10;
 	var modView,setView,offView,labelView,sliderView,numBoxesView;
@@ -31,18 +30,15 @@
 
 	////////////
 
-	buttMod.size.do({
-		arg i;
+	buttMod.size.do({ |i|
 
-		buttMod[i].size.do({
-			arg j;
+		buttMod[i].size.do({ |j|
 
 			rowMod[i].add(buttMod[i][j].states_([["\n"]]));
 		});
 	});
 
-	~guiInfo[song].onButts.size.do({ //instead of .size.do, just use .do and the second argument to get index numbers...
-		arg i;
+	~guiInfo[song].onButts.size.do({ |i|                    //instead of .size.do, just use .do and the second argument to get index numbers...
 		var buttX, buttY, string;
 		# buttX, buttY, string = ~guiInfo[song].onButts[i];
 
@@ -52,8 +48,7 @@
 		.minHeight_(yawnScale/2)
 	});
 
-	~guiInfo[song].modButtsOn.size.do({
-		arg i;
+	~guiInfo[song].modButtsOn.size.do({ |i|
 		var buttX,buttY,string;
 
 		# buttX,buttY, string = ~guiInfo[song].modButtsOn[i];
@@ -65,8 +60,7 @@
 
 	});
 
-	~guiInfo[song].modButtsMid.size.do({
-		arg i;
+	~guiInfo[song].modButtsMid.size.do({ |i|
 		var buttX,buttY,string;
 
 		# buttX,buttY,string = ~guiInfo[song].modButtsMid[i];
@@ -78,15 +72,13 @@
 	});
 
 	modView = VLayout();
-	rowMod.size.reverseDo({
-		arg i;
+	rowMod.size.reverseDo({ |i|
 
 		modView.add(rowMod[i]);
 	});
 
 	setView = VLayout();
-	buttSet.size.do({
-		arg i;
+	buttSet.size.do({ |i|
 
 		if(~guiInfo[song].songButt.asArray.includes(i),{
 
@@ -114,8 +106,7 @@
 	});
 
 	offView = HLayout();
-	buttOff.size.do({
-		arg i;
+	buttOff.size.do({ |i|
 
 		if(~guiInfo[song].offButts.asArray.includes(i),{
 
@@ -146,8 +137,7 @@
 	);
 
 	labelView = HLayout();
-	8.do({
-		arg i;
+	8.do({ |i|
 
 		case
 		{i < 7 and: {~guiInfo[song].offButts.asArray.includes(i)}}{
@@ -197,8 +187,7 @@
 	);
 
 	sliderView = HLayout();
-	8.do({
-		arg i;
+	8.do({ |i|
 
 		sliderView.add(
 			sliders[i]
@@ -222,8 +211,7 @@
 	);
 
 	numBoxesView = HLayout();
-	8.do({
-		arg i;
+	8.do({ |i|
 
 		numBoxesView.add(
 			numBoxes[i]
