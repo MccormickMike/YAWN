@@ -27,8 +27,7 @@ Ndef.all.fadeTime = 3.0; // also change / remove
 );
 
 (
-~arrays["loadSong"][1].size.do({
-	arg i;
+~arrays["loadSong"][1].size.do({ |i|
 	~arrays["loadSong"][1][i] = {~functions[(~setList[i][\song])].value};
 })
 );
