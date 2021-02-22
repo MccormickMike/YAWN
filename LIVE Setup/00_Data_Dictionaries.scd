@@ -17,9 +17,9 @@ Ndef.all.fadeTime = 3.0; // also change / remove
 
 	//Also, "loadSong" can be a 1D array filled with the fuction below and then !2, right?
 
-	"loadSong" -> Array.fill2D(2,8,{0}), // this could be cleaner..integrate thing from below, but maybe there's a better way to have a flexible setlist?
+	"loadSong" -> Array.fill2D(2,8,{0}), // this could be cleaner..integrate .do function below, but maybe there's a better way to have a flexible setlist?
 
-	//this is for GUI stuff!
+	//this is for GUI stuff! Might not be needed evenutally....
 	"currentTime" -> [0,0],
 	"sliderVals" -> Array.fill(9,{0}),
 	"currentSong" -> [0],

@@ -433,7 +433,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 	},
 
-	"empty" -> { //this is worth testing...
+	"empty" -> {
 		72.do({ |i| ~miniAPC.noteOn(0,i,0)});
 		MIDIdef(\buttons).free;
 		MIDIdef(\faders).free;

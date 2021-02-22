@@ -13,11 +13,10 @@
 		8.do({ |index|
 			var array;
 
-			if(index != 0,
-				{
-					array = (1!index).collect(
-						{ |i,j| if(j == 0,{i * 2},{i})}
-					);
+			if(index != 0,{
+				array = (1!index).collect({ |i,j|
+					if(j == 0,{i * 2},{i})
+				});
 			});
 
 			if(array.isNil.not,{
@@ -46,8 +45,9 @@
 			});
 		});
 		"% bpm".format(tempo).postln;
-	},
-	{"duplicate tempo".postln;})
+	},{
+		"duplicate tempo".postln;
+	})
 };
 "~bars function created".postln;
 )

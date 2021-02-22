@@ -50,7 +50,7 @@ MIDIdef.noteOn(\songLoader,{ |val, num, chan, src|
 	// reset the board
 	{num == 98}
 	{
-		128.do({ |i| ~miniAPC.noteOn(0,i,0);});
+		128.do({ |i| ~miniAPC.noteOn(0,i,0) });
 		~arrays["loadSong"][0] = Array.fill(8,{0});
 		Pdef.all.keysDo({ |i| Pdef(i).stop});
 		"controller reset".postln;

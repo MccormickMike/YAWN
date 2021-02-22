@@ -3,7 +3,7 @@
 (
 (
 SynthDef(\click,{
-	var env = EnvGen.kr(Env.perc(\atk.kr(0.01),\rls.kr(0.25),1.0,\curve.kr(-4)),1,doneAction: 2);
+	var env = Env.perc(\atk.kr(0.01),\rls.kr(0.25),1.0,\curve.kr(-4)).kr(2);
 	var sig = LFTri.ar(\freq.kr(1000));
 	sig = LPF.ar(sig,8000);
 	sig = Pan2.ar(sig,\pan.kr(0),\amp.kr(0.5));
@@ -13,7 +13,8 @@ SynthDef(\click,{
 
 // needs to be \playbackMono, need to add \playbackStereo
 // also, I need to figure something out with envelopes, no?
-SynthDef(\playbackMono-,{
+
+SynthDef(\playbackMono,{
 	var bufnum = \bufnum.kr;
 	var sig = PlayBuf.ar(1,bufnum,BufRateScale.kr(bufnum) * \rate.kr(1),doneAction: 2);
 	sig = Pan2.ar(sig,\pan.kr(0),\amp.kr(1));
@@ -148,8 +149,8 @@ SynthDef(\masterOut,{
 			(t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
 		]);
 
-		t = t % (2**(n));// avoiding number beyond 2**(bit resolution)
-		t = t*(0.5**(n-1)) - 1; //scaling to -1, 1
+		t = t % (2**(n)); // avoiding number beyond 2**(bit resolution)
+		t = t*(0.5**(n-1)) - 1; // scaling to -1, 1
 		t = Pan2.ar(t,Latch.kr(LFNoise2.kr(0.4).range(-0.8,0.8),Changed.kr(A2K.kr(t))),\amp.kr(0.3));
 		t = LeakDC.ar(t);
 		t = t*env;
