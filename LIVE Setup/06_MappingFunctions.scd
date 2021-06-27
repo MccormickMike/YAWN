@@ -132,8 +132,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 				Ndef(\noiseMakr).set(\freq,4,\counter,3,\bits,12,\sampleRate,12,\amp,0.5);
 				"noiseMakr ON".postln;
 			}
-			{num > 12 and: {num < 63} and: {num % 8 == 6} and: {Ndef(\noiseMakr).isPlaying}}
-			{
+			{num > 12 and: {num < 63} and: {num % 8 == 6} and: {Ndef(\noiseMakr).isPlaying}}{
 				var count = num % 7;
 				Ndef(\noiseMakr).set(\counter,count);
 				"noiseMakr counter: %".format(count).postln
@@ -154,8 +153,8 @@ var gitarInBus, snareInBus, bDrumInBus;
 			{num == 49}{Ndef(\grainer).set(\posRate,normExpVal.explin(0.001,1.0,0.5,2.0));"posRate: %".format(normExpVal.explin(0.001,1.0,0.5,2.0).round(0.01)).postln}
 			{num == 50}{Ndef(\grainer).set(\rate,normLinVal.linlin(0,1,0.5,2.0));"rate: %".format(normLinVal.linlin(0,1,0.5,2.0).round(0.01)).postln}
 			{num == 51}{"empty".postln}
-			{num == 52}{Ndef(\gitarFreeze).set(\dustTrig,normExpVal * 4);Ndef(\gitarStutter).set(\dustTrig,normExpVal * 4);"dustTrigGitar: %".format((normExpVal * 4).round(0.01)).postln}
-			{num == 53}{Ndef(\drumFreeze).set(\dustTrig,normExpVal * 4);Ndef(\drumStutter).set(\dustTrig,normExpVal * 4);"dustTrigDrum: %".format((normExpVal * 4).round(0.01)).postln}
+			{num == 52}{Ndef(\gitarFreeze).set(\dustTrig,normLinVal * 4);Ndef(\gitarStutter).set(\dustTrig,normLinVal * 4);"dustTrigGitar: %".format((normExpVal * 4).round(0.01)).postln}
+			{num == 53}{Ndef(\drumFreeze).set(\dustTrig,normLinVal * 4);Ndef(\drumStutter).set(\dustTrig,normLinVal * 4);"dustTrigDrum: %".format((normExpVal * 4).round(0.01)).postln}
 			{num == 54}{Ndef(\noiseMakr).xset(\freq,(normExpVal * 100) % 0.9,\bits,normLinVal.linlin(0,1,12,16),\sampleRate,normLinVal.linlin(0,1,24,12));"noiseMakr val: %".format(normLinVal.round(0.01)).postln}
 			{num == 55}{~busses["clickAmp"].set(normLinVal); "clickAmp: %".format(normLinVal.round(0.01)).postln}
 			{num == 56}{Ndef(\output).set(\amp,normLinVal); "masterAmp: %".format(normLinVal.round(0.01)).postln};
@@ -187,15 +186,17 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 			case
 			// metronome
-			{num == 7 and: {Pdef(\play2part1).isPlaying.not}}
-			{
+			{num == 7 and: {Pdef(\play2part1).isPlaying.not}}{
+				var seconds = 15;
+
 				Routine({
-					15.wait;
+					seconds.wait;
 
 					Pdef(\play2part1).play;
 
 				}).play;
-				"metro 2 part 1 starting in 25s".postln;
+
+				"metro 2 part 1 starting in % seconds".format(seconds).postln;
 			}
 			{num == 23 and: {Pdef(\play2part2).isPlaying.not}}{Pdef(\play2part1).stop; Pdef(\play2part2).play;"metro 2 part 2 start".postln}
 			{num == 55 and: {Pdef(\play2part3).isPlaying.not}}{Pdef(\play2part2).stop; Pdef(\play2part3).play;"metro 2 part 3 start".postln}

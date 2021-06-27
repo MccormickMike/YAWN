@@ -54,26 +54,24 @@ SynthDef(\masterOut,{
 ~yawnSynths = Dictionary[
 
 	"fftFreeze" -> {
-		var chain,trig;
-		var frames=4096;
+		var frames = 2048;
 		var sig = In.ar(\inBus.kr,1);
-		trig = Dust.kr(\dustTrig.kr) + \trig.tr;
-		trig = Trig.kr(trig,TRand.kr(0.3,0.5,trig));
-		chain = FFT(LocalBuf(frames), sig, 0.5, 0, 1, frames);
-		chain = PV_Freeze(chain,trig);
-		sig = IFFT(chain);
-		sig = Pan2.ar(sig*trig,TRand.kr(-1.0,1.0,trig),\amp.kr(1));
+		var trigFreq = \dustTrig.kr().clip(0.75,4);
+		var trig = Dust.kr(trigFreq) + \trig.tr;
+		trig = Trig.kr(trig,trigFreq.reciprocal);
+		sig = FFT(LocalBuf(frames),sig);
+		sig = PV_Freeze(sig,trig);
+		sig = IFFT(sig);
+		sig = Pan2.ar(sig * trig,TRand.kr(-1.0,1.0,trig),\amp.kr(1));
 	},
 
 	"brokenRecord" -> {
-		var sig1;
 		var sig = In.ar(\inBus.kr,1);
 		var trig = Dust.kr(\dustTrig.kr) + \trig.tr;
-		var gate = EnvGen.ar(Env.sine(0.1),trig);
-		var rand = TExpRand.kr(0.05,0.3,\trig.tr);
-		sig = CombC.ar(sig*gate,0.6,rand,Select.kr(Trig1.kr(trig,rand-0.01),[inf,0]));
-		sig1 = DelayN.ar(sig,0.6,rand*7/5);
-		sig = Pan2.ar(sig,LFNoise2.kr(0.2)) + Pan2.ar(sig1,LFNoise2.kr(0.2),\amp.kr(1));
+		var gate = Env.sine(0.1).kr(gate:trig);
+		var rand = TRand.kr(0.01,0.6,trig);
+		sig = CombC.ar(sig * gate,0.6,rand,Select.kr(1 - Trig1.kr(trig,0.01),[0,inf]));
+		sig = Pan2.ar(sig,TRand.kr(-1.0,1.0,trig),\amp.kr(1));
 	},
 
 	"shiftDelay" -> {
