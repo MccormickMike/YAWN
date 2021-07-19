@@ -33,7 +33,7 @@ Pdef('bell4',
 		\bufnum,Pseq([~buffers[\bell]],inf),
 		\rate,Pseq([1],inf),
 		\tempo, Pseq([142/60],inf),
-		\amp, Pfunc({~busses["clickAmp"w].getSynchronous}),
+		\amp, Pfunc({~busses["clickAmp"].getSynchronous}),
 		\outBus, ~outputs["click"],
 	)
 );
