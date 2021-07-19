@@ -33,7 +33,7 @@ Pdef('bell4',
 		\bufnum,Pseq([~buffers[\bell]],inf),
 		\rate,Pseq([1],inf),
 		\tempo, Pseq([142/60],inf),
-		\amp, Pfunc({~busses["clickAmp"].getSynchronous}),
+		\amp, Pfunc({~busses["clickAmp"w].getSynchronous}),
 		\outBus, ~outputs["click"],
 	)
 );
@@ -44,20 +44,22 @@ Pdef(\play4,
 		Pseq([
 			// count off
 			't142q2'!2,'t142q1'!4,
+
 			//beginning
 			't142q4'!116,
+
 			//ambient solo
 			'open4',
 			[['cue4','bell4']],
+
 			//synth sample buildup
 			't142q4'!5,'t142q2',
+
 			//heavy outro
 			't142q4'!57,
-			't142q2' // - last beat
+			't142q2' // last beat
 		].flatten(1),1)
 	)
 );
 "click #4 loaded".postln;
 )
-
-//rehearsal mark Pdefs!!!
