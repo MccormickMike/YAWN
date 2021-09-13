@@ -29,6 +29,17 @@ SynthDef(\stille,{
 	Out.ar(\outBus.kr(0),sig)
 }).add;
 
+SynthDef(\newGrains,{
+	var bufnum = \bufnum.kr;
+	var jitter = \jitter.kr(0).linlin(0,1,0,0.001);
+	var frames = BufFrames.kr(bufnum);
+	var pos = Phasor.ar(0,BufRateScale.kr(bufnum) * \rate.kr(1),\start.kr(0) * frames, \end.kr(1) * frames);
+	var sig = BufRd.ar(1,bufnum,pos + (LFNoise1.kr(100).range(jitter.neg,jitter) * frames));
+	sig = sig * Env.asr(\atk.kr(0.01),1,\rls.kr(0.01),\curve.kr(-4)).kr(2,\gate.kr(1));
+	sig = Pan2.ar(sig, \pan.kr(0),\amp.kr(1));
+	Out.ar(\outBus.kr(0),sig)
+}).add;
+
 SynthDef(\input,{
 	var sig = SoundIn.ar(\inBus.kr);
 	sig = Compander.ar(sig,sig,\compThresh.kr(0.5),1,0.5,0.01,0.01);
@@ -130,11 +141,21 @@ SynthDef(\masterOut,{
 		Limiter.ar(sig);
 	},
 
+	"newGrains" -> {
+		var bufnum = \bufnum.kr;
+		var jitter = \jitter.kr().linlin(0,1,0,0.0005);
+		var frames = BufFrames.kr(bufnum);
+		var pos = Phasor.ar(0,BufRateScale.kr(bufnum) * \rate.kr(1),\start.kr(0) * frames, \end.kr(1) * frames);
+		var sig = BufRd.ar(1,bufnum,pos + LFNoise1.kr(1).range(jitter.neg,jitter));
+		sig = sig * Env.asr(\atk.kr(0.01),1,\rls.kr(0.01),\curve.kr(-4)).kr(2,\gate.kr(1));
+		sig = Pan2.ar(sig, \pan.kr(0),\amp.kr(1));
+	},
+
 	"noizer" -> {
 		var sr = SampleRate.ir / \sampleRate.kr(12);
 		var n = \bits.kr(12).clip(12,24); //bit resolution
 		var t= Phasor.ar(1,\freq.kr(8) * ((2**n)/sr),0,((2**n)-1));
-		var env = EnvGen.kr(Env.asr(releaseTime: 0.01),\gate.kr(1),doneAction:2);
+		var env = Env.asr(releaseTime: 0.01).kr(2,\gate.kr(1));
 
 		t = Select.ar(\counter.kr(0),[
 
@@ -149,9 +170,8 @@ SynthDef(\masterOut,{
 
 		t = t % (2**(n)); // avoiding number beyond 2**(bit resolution)
 		t = t*(0.5**(n-1)) - 1; // scaling to -1, 1
-		t = Pan2.ar(t,Latch.kr(LFNoise2.kr(0.4).range(-0.8,0.8),Changed.kr(A2K.kr(t))),\amp.kr(0.3));
 		t = LeakDC.ar(t);
-		t = t*env;
+		Pan2.ar(t * env,0,\amp.kr(0.3));
 	},
 
 ]

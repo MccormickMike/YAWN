@@ -29,7 +29,7 @@ var gitarInBus, snareInBus, bDrumInBus;
 
 			case
 			// metronome
-			{num == 7 and: {Pdef(\play1part1).isPlaying.not}}{Pdef(\play1part1).play;"metro 1 part 1 start".postln}
+			{num == 7  and: {Pdef(\play1part1).isPlaying.not}}{Pdef(\play1part1).play;"metro 1 part 1 start".postln}
 			{num == 15 and: {Pdef(\play1part1).isPlaying}}{~cues["numberOne"][\loop4cue] = false; "loop 4 cued".postln}
 			{num == 23 and: {Pdef(\play1part1).isPlaying}}{~cues["numberOne"][\loop8cue] = false; "loop 8 cued".postln}
 			{num == 31 and: {Pdef(\play1part1).isPlaying}}{~cues["numberOne"][\elevenRiffcue] = false; "eleven Riff cued".postln}

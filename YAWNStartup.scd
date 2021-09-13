@@ -24,7 +24,7 @@ server.waitForBoot({
 	});
 
 	// also, make a folder with the setlist and maybe the dictionary files -> the only ones that need to be accessed to change ins/outs, set order, etc.
-	// also, add a command to load a server meter in th`e top right hand corner of the screen! Or add it to GUI?
+	// also, add a command to load a server meter in the top right hand corner of the screen! Or add it to GUI?
 
 	"\n\nYAWN Live Setup Ready".postln;
 
@@ -32,21 +32,5 @@ server.waitForBoot({
 )
 
 START CUE BETWEEN FIRE & TRE
-
-
-(
-Pdef(\torfinnTwo,
-	Pbind(
-		\instrument, \click,
-		\freq,Pseq([2,1,1,1],1) * 1000,
-		\tempo,Pseq([100/60],inf),
-		\amp, Pfunc({~busses["clickAmp"].getSynchronous}),
-		\outBus, ~outputs["click"],
-
-	)
-).play
-)
-
-Pdef(\torfinnTwo).stop
 
 
